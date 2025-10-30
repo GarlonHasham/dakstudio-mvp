@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { ArrowLeft, Loader2, Share2, Download } from 'lucide-react';
 import dynamic from 'next/dynamic';
 
-// 🔹 Dynamische imports (client-only, geen SSR)
+// Client-only components (Leaflet/DOM) – SSR uitzetten
 const MapView = dynamic(() => import('./components/MapView'), { ssr: false });
 const StreetView = dynamic(() => import('./components/StreetView'), { ssr: false });
 
@@ -96,7 +96,7 @@ function calculateBenefits(building: Building, config: RooftopConfig): Benefits 
   return result;
 }
 
-// 🔧 Helper: polygon -> tuples
+// 🔧 Helper: polygon -> LatLng tuples
 function toTuples(poly?: Array<{ lat: number; lng: number }>): [number, number][] | undefined {
   if (!poly || !poly.length) return undefined;
   return poly.map((p) => [p.lat, p.lng] as [number, number]);
