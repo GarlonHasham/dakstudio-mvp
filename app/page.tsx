@@ -93,6 +93,12 @@ function calculateBenefits(building: Building, config: RooftopConfig): Benefits 
   return result;
 }
 
+// Helper om polygon om te zetten naar tuples
+function toTuples(poly?: Array<{ lat: number; lng: number }>): [number, number][] | undefined {
+  if (!poly || !poly.length) return undefined;
+  return poly.map(p => [p.lat, p.lng] as [number, number]);
+}
+
 // ---------------- MAIN PAGE ----------------
 export default function DakStudioApp() {
   const [phase, setPhase] = useState<'search' | 'configure' | 'visualize'>('search');
@@ -245,7 +251,11 @@ export default function DakStudioApp() {
                 />
               ) : (
                 <div className="aspect-video rounded-lg overflow-hidden border">
-                  <MapView building={building} />
+                  <MapView
+                    center={[building.coordinates.lat, building.coordinates.lng]}
+                    polygon={toTuples(building.footprint)}
+                    label={building.address}
+                  />
                 </div>
               )}
             </div>
@@ -381,7 +391,11 @@ export default function DakStudioApp() {
                 />
               ) : (
                 <div className="aspect-video rounded-lg overflow-hidden border">
-                  <MapView building={building} />
+                  <MapView
+                    center={[building.coordinates.lat, building.coordinates.lng]}
+                    polygon={toTuples(building.footprint)}
+                    label={building.address}
+                  />
                 </div>
               )}
             </div>
