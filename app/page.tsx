@@ -3,8 +3,11 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Loader2, Share2, Download } from 'lucide-react';
 import dynamic from 'next/dynamic';
+
+// 🔹 Dynamische imports (client-only, geen SSR)
 const MapView = dynamic(() => import('./components/MapView'), { ssr: false });
-import StreetView from './components/StreetView';
+const StreetView = dynamic(() => import('./components/StreetView'), { ssr: false });
+
 import MethodiekPanel from './components/MethodiekPanel';
 import {
   geocodeAddress,
@@ -93,10 +96,10 @@ function calculateBenefits(building: Building, config: RooftopConfig): Benefits 
   return result;
 }
 
-// Helper om polygon om te zetten naar tuples
+// 🔧 Helper: polygon -> tuples
 function toTuples(poly?: Array<{ lat: number; lng: number }>): [number, number][] | undefined {
   if (!poly || !poly.length) return undefined;
-  return poly.map(p => [p.lat, p.lng] as [number, number]);
+  return poly.map((p) => [p.lat, p.lng] as [number, number]);
 }
 
 // ---------------- MAIN PAGE ----------------
@@ -142,7 +145,7 @@ export default function DakStudioApp() {
 
       setBuilding(newBuilding);
 
-      // Fetch woningdichtheid in de buurt (optioneel)
+      // woningdichtheid (optioneel)
       try {
         const r = await fetch(
           `/api/geo/density?lat=${encodeURIComponent(geo.lat)}&lng=${encodeURIComponent(geo.lng)}`
@@ -247,7 +250,6 @@ export default function DakStudioApp() {
                 <StreetView
                   lat={building.coordinates.lat}
                   lng={building.coordinates.lng}
-                  label="street"
                 />
               ) : (
                 <div className="aspect-video rounded-lg overflow-hidden border">
@@ -316,7 +318,7 @@ export default function DakStudioApp() {
                         })
                       }
                       className={`w-full p-3 mb-2 rounded-lg border-2 flex justify-between ${
-                        config.features[f.k as keyof typeof config.features]
+                        (config.features as any)[f.k]
                           ? 'border-blue-500 bg-blue-50'
                           : 'border-gray-200'
                       }`}
@@ -387,7 +389,6 @@ export default function DakStudioApp() {
                 <StreetView
                   lat={building.coordinates.lat}
                   lng={building.coordinates.lng}
-                  label="street"
                 />
               ) : (
                 <div className="aspect-video rounded-lg overflow-hidden border">
