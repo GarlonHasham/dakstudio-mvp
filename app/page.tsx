@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { ArrowLeft, Loader2, Share2, Download } from 'lucide-react';
-
-import MapView from './components/MapView';
+import dynamic from 'next/dynamic';
+const MapView = dynamic(() => import('./components/MapView'), { ssr: false });
 import StreetView from './components/StreetView';
 import MethodiekPanel from './components/MethodiekPanel';
 import {
